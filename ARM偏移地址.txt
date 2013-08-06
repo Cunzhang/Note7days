@@ -1,0 +1,24 @@
+ARM平台下B跳转指令的偏移地址处理的问题
+
+__text:0000C64A		 03 E0		B loc_C654
+__text:0000C64C						; --------------------------
+__text:0000C64C
+__text:0000C64C		 loc_C64C			; CODE XREF: __text:0000C3EC
+__text:0000C64C		 B0 23		MOVS R3, #0xB0
+__text:0000C64E		 F0 58		LDR R0, [R6,R3]
+__text:0000C650		 00 25		MOVS R5, #0
+__text:0000C652		 05 60		STR R5, [R0]
+__text:0000C654		
+__text:0000C654		 loc_C654			; CODE XREF: __text:loc_C64A
+__text:0000C654		 D0 48		LDR R0, =(aNotingDisappea - 0xC65C)
+
+ARM下偏移地址是如何得来的呢?例如这个：
+__text:0000C64A		 03 E0		B loc_C654
+机器码的03是如何计算出来的?
+
+计算：((0xc654-0xc64a)-(2*2))/2 = 3
+
+2*2 为ARM是2级流水线，指令长度乘以2.
+/2 为该处指令为thumb指令。有一个补充的最低位
+
+当然在ARM指令集下就为： 4*2 与 /4
